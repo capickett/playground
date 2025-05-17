@@ -1,0 +1,24 @@
+rust_library(
+    name = "library",
+    srcs = glob(
+        ["src/**/*.rs"],
+    ),
+)
+
+rust_binary(
+    name = "main",
+    srcs = glob(
+        ["bin/**/*.rs"],
+    ),
+    crate_root = "bin/main.rs",
+    deps = [":library"],
+)
+
+rust_test(
+    name = "test",
+    srcs = glob(
+        ["test/**/*.rs"],
+    ),
+    deps = [":library"],
+)
+
