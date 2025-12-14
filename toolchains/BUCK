@@ -1,7 +1,6 @@
 load("@prelude//android/tools:jdk_system_image.bzl", "jdk_system_image")
 load("@prelude//tests:test_toolchain.bzl", "noop_test_toolchain")
 load("@prelude//toolchains:android.bzl", "android_sdk_tools", "system_android_toolchain")
-load("@prelude//toolchains:cxx.bzl", "system_cxx_toolchain")
 load("@prelude//toolchains:dex.bzl", "system_dex_toolchain", "system_noop_dex_toolchain")
 load("@prelude//toolchains:erlang.bzl", "system_erlang_toolchain")
 load("@prelude//toolchains:genrule.bzl", "system_genrule_toolchain")
@@ -34,8 +33,12 @@ system_android_toolchain(
     visibility = ["PUBLIC"],
 )
 
-system_cxx_toolchain(
+toolchain_alias(
     name = "cxx",
+    actual = select({
+        "DEFAULT": "@toolchains//cxx:system",
+        "config//cpu/constraints:wasm32": "@toolchains//cxx:wasm32-unknown-unknown",
+    }),
     visibility = ["PUBLIC"],
 )
 
@@ -204,6 +207,19 @@ remote_python_toolchain(
 system_rust_toolchain(
     name = "rust",
     default_edition = "2024",
+    rustc_target_triple = select({
+        "DEFAULT": None,
+        "config//cpu/constraints:wasm32": select({
+            "config//os/constraints:none": "wasm32-unknown-unknown",
+            "config//os/constraints:wasi": "wasm32-wasip1",
+        }),
+    }),
+    rustc_flags = select({
+        "DEFAULT": [],
+        "config//cpu/constraints:wasm32": [
+            "-Clinker-flavor=gcc",
+        ],
+    }),
     visibility = ["PUBLIC"],
 )
 

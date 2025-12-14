@@ -1,0 +1,30 @@
+load("@prelude//toolchains:cxx.bzl", "cxx_tools_info_toolchain", "system_cxx_toolchain")
+load(":wasm32_tools_info.bzl", "wasm32_tools")
+
+system_cxx_toolchain(
+    name = "system",
+    visibility = ["PUBLIC"],
+)
+
+cxx_tools_info_toolchain(
+    name = "wasm32-unknown-unknown",
+    c_flags = [
+        "--target=wasm32-unknown-unknown",
+    ],
+    cxx_flags = [
+        "--target=wasm32-unknown-unknown",
+    ],
+    link_flags = [
+        "--target=wasm32-unknown-unknown",
+        "-nodefaultlibs",
+        "-nostartfiles",
+        "-Wl,--no-entry",
+    ],
+    cxx_tools_info = ":wasm32-tools-info",
+    link_style = "static",
+    visibility = ["PUBLIC"],
+)
+
+wasm32_tools(
+    name = "wasm32-tools-info",
+)
