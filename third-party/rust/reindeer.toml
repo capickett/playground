@@ -10,7 +10,7 @@
 
 # Write output to third-party/rust/BUCK
 # This also sets the default input (manifest_path) to third-party/rust/Cargo.toml
-third_party_dir = "third-party/rust"
+third_party_dir = "."
 
 # Configuration for generated BUCK file
 [buck]
